@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:16 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 22:31:04 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:34:57 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -66,6 +66,12 @@ int	philo_eat(t_philo *ph)
 	write_message(ph, EAT);
 	usleep(ph->data->tt_eat * 1000);
 	ph->meals_counter++;
+	if (ph->data->n_meals != -1 && ph->data->n_meals == ph->meals_counter)
+	    ph->data->n_satisfied++;
+	if (ph->data->n_satisfied == ph->data->n_philo){
+	    ph->data->end = 1;
+	    queue_iter(ph->data->eat_queue, unlock_philos);
+	}
 	ph->left_fork->active = 0;
 	if (pthread_mutex_unlock(&ph->left_fork->mtx))
 		return (MUTEX_ERROR);

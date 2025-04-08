@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:33:52 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 22:23:07 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:34:45 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -97,4 +97,5 @@ int						philo_eat(t_philo *ph);
 int						start_simulation(t_data *data);
 void					cleanup_simulation(t_data *data);
 void					check_size(t_queue *queue);
+void unlock_philos(void *ph);
 #endif

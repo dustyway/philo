@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:36:20 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 22:31:58 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:34:56 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -31,7 +31,7 @@ void 	*checker_thread(void *data)
 	    /* printf("running checker\n"); */
 	    pthread_mutex_lock(&ph->eating_or_check);
 	    elapsed = time_elapsed_since(ph->lastmeal);
-	    printf("elapsed %d\n", elapsed);
+	    /* printf("elapsed %d\n", elapsed); */
 	    /* printf("end %d\n", ph->data->end); */
 	    if (elapsed > ph->data->tt_die)
 	    {
@@ -53,7 +53,6 @@ void	*philosopher_thread(void *data)
 {
 	t_philo	*ph;
 	int		status;
-	int i;
 
 	ph = data;
 	printf("hello from philo %d\n", ph->id);
@@ -62,7 +61,6 @@ void	*philosopher_thread(void *data)
 	if (pthread_create(&ph->checker_id, NULL, checker_thread, ph))
 	    return ((void *)THREAD_ERROR);
 
-	i=0;
 	while (!ph->data->end)
 	{
 		status = philo_think(ph);
@@ -76,7 +74,6 @@ void	*philosopher_thread(void *data)
 		philo_sleep(ph);
 		if (status != SUCCESS)
 			return ((void *)(intptr_t)status);
-		i++;
 	}
 	return ((void *)SUCCESS);
 }
@@ -90,11 +87,11 @@ void	*waiter_thread(void *data)
 	d = (t_data *)data;
 	while (!d->end)
 	{
-		printf("running waiter\n");
-		while ((d->n_eating != 0 || (int) d->eat_queue->size < d->n_philo / 2))
+		/* printf("running waiter\n"); */
+		while (!d->end && (d->n_eating != 0 || (int) d->eat_queue->size < d->n_philo / 2))
 			usleep(42);
-		printf("serving philos\n");
-		while (d->n_eating != d->n_philo / 2)
+		usleep(42);
+		while (!d->end && d->n_eating != d->n_philo / 2)
 		{
 			i = -1;
 			while (++i < (int) d->eat_queue->size)
@@ -108,7 +105,7 @@ void	*waiter_thread(void *data)
 			}
 			/* printf("number eating: %d/%d\n", d->n_eating, d->n_philo); */
 		}
-		printf("served philos\n");
+		/* printf("served philos\n"); */
 	}
 	return (NULL);
 }
@@ -157,6 +154,12 @@ void	cleanup_simulation(t_data *data)
 	i = -1;
 	while (++i < data->n_philo)
 		pthread_mutex_destroy(&data->forks[i].mtx);
+	/* if(pthread_mutex_destroy(&data->write_access)) */
+	/*     printf("write acces destroy failed\n"); */
+	if(pthread_mutex_destroy(&data->data_access))
+	    printf("data acces destroy failed\n");
+	if(pthread_mutex_destroy(&data->waiter_lock))
+	   printf("waiter lock destroy failed\n");
 	free(data->forks);
 	free(data->philos);
 	clear_queue(&data->eat_queue);

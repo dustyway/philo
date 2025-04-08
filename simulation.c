@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:36:20 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 23:34:56 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/09 00:16:58 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -60,7 +60,7 @@ void	*philosopher_thread(void *data)
 		return ((void *)TIME_ERROR);
 	if (pthread_create(&ph->checker_id, NULL, checker_thread, ph))
 	    return ((void *)THREAD_ERROR);
-
+	pthread_mutex_lock(&ph->allow_eating);
 	while (!ph->data->end)
 	{
 		status = philo_think(ph);
@@ -87,7 +87,7 @@ void	*waiter_thread(void *data)
 	d = (t_data *)data;
 	while (!d->end)
 	{
-		/* printf("running waiter\n"); */
+		printf("running waiter\n");
 		while (!d->end && (d->n_eating != 0 || (int) d->eat_queue->size < d->n_philo / 2))
 			usleep(42);
 		usleep(42);
@@ -96,7 +96,7 @@ void	*waiter_thread(void *data)
 			i = -1;
 			while (++i < (int) d->eat_queue->size)
 			{
-				/* printf("try eating\n"); */
+				printf("try eating\n");
 				if (try_eating(lst_nth(d->eat_queue->front, i)) == SUCCESS)
 				{
 					dequeue_nth(d->eat_queue, i);
@@ -105,7 +105,7 @@ void	*waiter_thread(void *data)
 			}
 			/* printf("number eating: %d/%d\n", d->n_eating, d->n_philo); */
 		}
-		/* printf("served philos\n"); */
+		printf("served philos\n");
 	}
 	return (NULL);
 }

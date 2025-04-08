@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 17:51:37 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 23:46:27 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/09 00:09:31 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -30,8 +30,8 @@ int	create_philos(t_data *data, t_philo **philos)
 			return (MUTEX_ERROR);
 		if (pthread_mutex_init(&(*philos)[i].allow_eating, NULL))
 			return (MUTEX_ERROR);
-		if (pthread_mutex_lock(&(*philos)[i].allow_eating))
-			return (MUTEX_ERROR);
+		/* if (pthread_mutex_lock(&(*philos)[i].allow_eating)) */
+		/* 	return (MUTEX_ERROR); */
 	}
 	return (0);
 }

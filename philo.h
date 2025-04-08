@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:33:52 by pschneid          #+#    #+#             */
-/*   Updated: 2025/03/21 22:14:21 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:43:59 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -58,6 +58,7 @@ typedef struct s_philo
 	int					meals_counter;
 
 	pthread_t			thread_id;
+    	pthread_t			checker_id;
 	struct timeval		lastmeal;
 	t_fork				*left_fork;
 	t_fork				*right_fork;
@@ -76,6 +77,7 @@ struct					s_data
 	struct timeval		start_simulation;
 	volatile int		end;
 	int					n_eating;
+    	int					n_satisfied;
 	pthread_mutex_t		data_access;
 	pthread_mutex_t		write_access;
 	pthread_mutex_t		waiter_lock;

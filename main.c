@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 17:51:37 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/07 23:00:34 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:03:40 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -40,7 +40,7 @@ int	init_data(t_data *data)
 {
 	int	i;
 
-	// data->n_satisfied = 0;
+	data->n_satisfied = 0;
 	data->n_eating = 0;
 	data->end = 0;
 	init_queue(&data->eat_queue, free);

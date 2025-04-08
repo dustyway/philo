@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:16 by pschneid          #+#    #+#             */
-/*   Updated: 2025/03/21 22:14:33 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:31:04 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -48,7 +48,14 @@ int	try_eating(t_philo *ph)
 int	philo_eat(t_philo *ph)
 {
 	enqueue(ph->data->eat_queue, ph);
+	printf("enqued, queue size %d\n", ph->data->eat_queue->size);
 	pthread_mutex_lock(&ph->allow_eating);
+	printf("allowed eating\n");
+	if (ph->data->end) {
+		printf("returning %d because end\n", ph->id);
+		return (SUCCESS);
+		//return (SIMULATION_END);
+	}
 	pthread_mutex_lock(&ph->eating_or_check);
 	pthread_mutex_lock(&ph->data->data_access);
 	ph->data->n_eating++;

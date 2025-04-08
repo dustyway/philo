@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 20:24:58 by pschneid          #+#    #+#             */
-/*   Updated: 2025/03/21 20:25:00 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:23:53 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "queue.h"
@@ -85,4 +85,17 @@ void	*lst_nth(t_list *lst, size_t n)
 		n--;
 	}
 	return (lst->content);
+}
+
+
+void	ft_lstiter(t_list *lst, void (*f)(void *))
+{
+	t_list	*iter;
+
+	iter = lst;
+	while (iter)
+	{
+		f(iter->content);
+		iter = iter->next;
+	}
 }

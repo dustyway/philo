@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:00:04 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/07 21:43:51 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:23:06 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "queue.h"
@@ -89,4 +89,12 @@ void	*dequeue_nth(t_queue *queue, size_t n)
 	queue->size--;
 	pthread_mutex_unlock(&queue->mtx);
 	return (value);
+}
+
+
+
+void queue_iter(t_queue *queue, void (*f)(void *)) {
+	pthread_mutex_lock(&queue->mtx);
+	ft_lstiter(queue->front, f);
+	pthread_mutex_unlock(&queue->mtx);
 }

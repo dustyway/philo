@@ -43,7 +43,7 @@ int	init_data(t_data *data)
 	data->n_satisfied = 0;
 	data->n_eating = 0;
 	data->end = 0;
-	init_queue(&data->eat_queue, free);
+	init_queue(&data->eat_queue, NULL);
 	data->forks = malloc(sizeof(t_fork) * data->n_philo);
 	if (!data->forks)
 		return (MALLOC_ERROR);

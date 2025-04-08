@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 17:51:37 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 19:03:40 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/08 23:46:27 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -50,7 +50,7 @@ int	init_data(t_data *data)
 	i = 0;
 	while (i < data->n_philo)
 	{
-		data->forks->active = 0;
+		data->forks[i].active = 0;
 		if (pthread_mutex_init(&data->forks[i++].mtx, NULL) != 0)
 			return (MUTEX_ERROR);
 	}

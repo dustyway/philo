@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:33:52 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/10 16:19:07 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:23:45 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -24,6 +24,7 @@
 enum					e_errors
 {
 	SUCCESS = 0,
+	END_SIMULATION,
 	FORKS_BLOCKED,
 	PHILO_DIED,
 	MALLOC_ERROR,
@@ -56,20 +57,21 @@ typedef struct s_philo
 {
 	int					id;
 	int					meals_counter;
-
+	int		allow_eating;
 	pthread_t			thread_id;
     	pthread_t			checker_id;
 	struct timeval		lastmeal;
 	t_fork				*left_fork;
 	t_fork				*right_fork;
-	pthread_mutex_t		eating_or_check;
-	int		allow_eating;
+	pthread_mutex_t		mtx_allow_eating;
+    pthread_mutex_t		mtx_eating_or_check;
 	t_data				*data;
 }						t_philo;
 
 struct					s_data
 {
 	int					n_philo;
+    int                                         n_philo_started;
 	int					tt_die;
 	int					tt_eat;
 	int					tt_sleep;
@@ -77,10 +79,9 @@ struct					s_data
 	struct timeval		start_simulation;
 	volatile int		end;
 	int					n_eating;
-    	int					n_satisfied;
-	pthread_mutex_t		data_access;
-	pthread_mutex_t		write_access;
-	pthread_mutex_t		waiter_lock;
+	pthread_mutex_t		mtx_data_access;
+	pthread_mutex_t		mtx_write_access;
+	pthread_mutex_t		mtx_waiter_lock;
 	t_fork				*forks;
 	t_philo				*philos;
 	t_queue				*eat_queue;

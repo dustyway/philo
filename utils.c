@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:21 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/10 13:41:51 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:11:17 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -28,7 +28,7 @@ int	write_message(t_philo *ph, enum e_actions action)
 {
 	char		*str;
 
-	if (pthread_mutex_lock(&(ph->data->write_access)))
+	if (pthread_mutex_lock(&(ph->data->mtx_write_access)))
 		return (MUTEX_ERROR);
 	if (action == FORK)
 		str = "has taken a fork";
@@ -46,7 +46,7 @@ int	write_message(t_philo *ph, enum e_actions action)
 		ph->id, str);
 	if (action != DIED)
 	{
-		if (pthread_mutex_unlock(&(ph->data->write_access)))
+		if (pthread_mutex_unlock(&(ph->data->mtx_write_access)))
 			return (MUTEX_ERROR);
 	}
 	return (SUCCESS);
@@ -57,9 +57,9 @@ int sync_printf(t_data *data, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    pthread_mutex_lock(&data->write_access);
+    pthread_mutex_lock(&data->mtx_write_access);
     vprintf(format, args);
-    pthread_mutex_unlock(&data->write_access);
+    pthread_mutex_unlock(&data->mtx_write_access);
     va_end(args);
     return 0;
 }

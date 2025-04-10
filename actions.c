@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:16 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/10 15:46:57 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:26:46 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -27,33 +27,57 @@ int	philo_think(t_philo *ph)
 	return (write_message(ph, THINK));
 }
 
-int	try_eating(t_philo *ph)
+/* int	try_eating(t_philo *ph) */
+/* { */
+/* 	if (!ph) */
+/* 		return (NULL_ERROR); */
+/* 	if (!ph->left_fork->active && !ph->right_fork->active) */
+/* 	{ */
+/* 		pthread_mutex_lock(&ph->left_fork->mtx); */
+/* 		ph->left_fork->active = 1; */
+/* 		write_message(ph, FORK); */
+/* 		pthread_mutex_lock(&ph->right_fork->mtx); */
+/* 		ph->right_fork->active = 1; */
+/* 		write_message(ph, FORK); */
+/* 		sync_printf(ph->data, "allow eating: %d\n", ph->id); */
+/* 		pthread_mutex_unlock(&ph->allow_eating); */
+/* 		return (SUCCESS); */
+/* 	} */
+/* 	return (FORKS_BLOCKED); */
+/* } */
+
+int wait_for_permission(t_philo *ph)
 {
-	if (!ph)
-		return (NULL_ERROR);
-	if (!ph->left_fork->active && !ph->right_fork->active)
-	{
-		pthread_mutex_lock(&ph->left_fork->mtx);
-		ph->left_fork->active = 1;
-		write_message(ph, FORK);
-		pthread_mutex_lock(&ph->right_fork->mtx);
-		ph->right_fork->active = 1;
-		write_message(ph, FORK);
-		sync_printf(ph->data, "allow eating: %d\n", ph->id);
-		pthread_mutex_unlock(&ph->allow_eating);
-		return (SUCCESS);
+    while(1) {
+        pthread_mutex_lock(&ph->mtx_allow_eating);
+	if (ph->data->end) {
+	    pthread_mutex_unlock(&ph->mtx_allow_eating);
+	    return (END_SIMULATION);
 	}
-	return (FORKS_BLOCKED);
+	if (ph->allow_eating)
+	{
+	    pthread_mutex_unlock(&ph->mtx_allow_eating);
+	    ph->allow_eating = 0;
+	    return (SUCCESS);
+	}
+	pthread_mutex_unlock(&ph->mtx_allow_eating);
+	usleep(100);
+    }
 }
+
+
 
 int	philo_eat(t_philo *ph)
 {
 	enqueue(ph->data->eat_queue, ph);
 	sync_printf(ph->data, "enqued, queue size %ld\n", ph->data->eat_queue->size);
-	pthread_mutex_lock(&ph->allow_eating);
+	if (wait_for_permission(ph) == END_SIMULATION) {
+	    sync_printf(ph->data, "returning %d because end\n", ph->id);
+	    return (END_SIMULATION);
+	}
 	printf("allowed eating %d\n", ph->id);
 	/* if (ph->data->end) { */
-	/* 	printf("returning %d because end\n", ph->id); */
+
 	/* 	return (SUCCESS); */
 	/* 	//return (SIMULATION_END); */
 	/* } */
@@ -82,6 +106,5 @@ int	philo_eat(t_philo *ph)
 	/* pthread_mutex_lock(&ph->data->data_access); */
 	/* ph->data->n_eating--; */
 	/* pthread_mutex_unlock(&ph->data->data_access); */
-	pthread_mutex_lock(&ph->allow_eating);
 	return (SUCCESS);
 }

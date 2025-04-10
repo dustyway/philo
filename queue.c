@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:00:04 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 22:23:06 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:48:03 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "queue.h"
@@ -33,8 +33,8 @@ void	enqueue(t_queue *queue, void *value)
 {
 	t_list	*new_node;
 
-	new_node = ft_lstnew(value);
 	pthread_mutex_lock(&queue->mtx);
+	new_node = ft_lstnew(value);
 	if (queue->back == NULL)
 	{
 		queue->front = new_node;
@@ -97,4 +97,25 @@ void queue_iter(t_queue *queue, void (*f)(void *)) {
 	pthread_mutex_lock(&queue->mtx);
 	ft_lstiter(queue->front, f);
 	pthread_mutex_unlock(&queue->mtx);
+}
+
+void	*queue_peek_n(t_queue *queue, size_t n)
+{
+    void *value;
+	if (queue == NULL)
+		return (NULL);
+	pthread_mutex_lock(&queue->mtx);
+	value = lst_nth(queue->front, n);
+	pthread_mutex_unlock(&queue->mtx);
+	return value;
+}
+
+size_t	queue_size(t_queue *queue)
+{
+    size_t size;
+    pthread_mutex_lock(&queue->mtx);
+    size = queue->size;
+    pthread_mutex_unlock(&queue->mtx);
+    return (size);
+	
 }

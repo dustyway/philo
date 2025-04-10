@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:33:52 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 23:34:45 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 16:19:07 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -63,7 +63,7 @@ typedef struct s_philo
 	t_fork				*left_fork;
 	t_fork				*right_fork;
 	pthread_mutex_t		eating_or_check;
-	pthread_mutex_t		allow_eating;
+	int		allow_eating;
 	t_data				*data;
 }						t_philo;
 
@@ -98,4 +98,5 @@ int						start_simulation(t_data *data);
 void					cleanup_simulation(t_data *data);
 void					check_size(t_queue *queue);
 void unlock_philos(void *ph);
+int sync_printf(t_data *data, const char *format, ...);
 #endif

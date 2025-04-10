@@ -6,10 +6,11 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:21 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 23:04:53 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:41:51 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
+#include <stdarg.h>
 
 uint64_t	time_elapsed_since(struct timeval timeref)
 {
@@ -50,3 +51,16 @@ int	write_message(t_philo *ph, enum e_actions action)
 	}
 	return (SUCCESS);
 }
+
+
+int sync_printf(t_data *data, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    pthread_mutex_lock(&data->write_access);
+    vprintf(format, args);
+    pthread_mutex_unlock(&data->write_access);
+    va_end(args);
+    return 0;
+}
+

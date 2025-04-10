@@ -1,7 +1,7 @@
 NAME	:= philo
 
-CC	:= cc
-CFLAGS	:= -g #-Wextra -Wall -Werror
+CC	:= gcc
+CFLAGS	:= -g -fsanitize=thread #-Wextra -Wall -Werror
 
 HEADERS	:= -I. 
 SRCS	:= actions.c ft_list.c main.c parsing.c queue.c simulation.c utils.c
@@ -13,7 +13,7 @@ all:  $(NAME)
 	@$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS) && printf "Compiling: $(notdir $<)\n"
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) $(HEADERS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(HEADERS) -o $(NAME)
 
 
 clean:

@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:03:09 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/08 22:23:50 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:48:16 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <pthread.h>
@@ -37,6 +37,7 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 void				init_queue(t_queue **q, void (*del)(void *));
 void	clear_queue(t_queue **q);
 int					queue_is_empty(t_queue *queue);
+size_t	queue_size(t_queue *q);
 void				enqueue(t_queue *queue, void *value);
 void				*dequeue(t_queue *queue);
 void				*dequeue_nth(t_queue *queue, size_t n);

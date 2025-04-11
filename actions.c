@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:16 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/11 15:34:31 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/11 21:59:03 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -80,7 +80,7 @@ int	philo_eat(t_philo *ph)
 	    sync_printf(ph->data, "returning %d because end\n", ph->id);
 	    return (END_SIMULATION);
 	}
-	printf("allowed eating %d\n", ph->id);
+	sync_printf(ph->data, "allowed eating %d\n", ph->id);
 	pthread_mutex_lock(&ph->mtx_eating_or_check);
 	pthread_mutex_lock(&ph->data->mtx_data_access);
 	ph->data->n_eating++;
@@ -91,20 +91,13 @@ int	philo_eat(t_philo *ph)
 	write_message(ph, EAT);
 	usleep(ph->data->tt_eat * 1000);
 	ph->meals_counter++;
-	/* if (ph->data->n_meals != -1 && ph->data->n_meals == ph->meals_counter) */
-	/*     ph->data->n_satisfied++; */
-	/* if (ph->data->n_satisfied == ph->data->n_philo){ */
-	/*     ph->data->end = 1; */
-	/*     queue_iter(ph->data->eat_queue, unlock_philos); */
-	/* } */
-
+	pthread_mutex_lock(&ph->data->mtx_data_access);
 	if (pthread_mutex_lock(&ph->left_fork->mtx) || pthread_mutex_lock(&ph->right_fork->mtx))
 		return (MUTEX_ERROR);
 	ph->left_fork->is_active = 0;	
 	ph->right_fork->is_active = 0;
 	if (pthread_mutex_unlock(&ph->left_fork->mtx) || pthread_mutex_unlock(&ph->right_fork->mtx))
 		return (MUTEX_ERROR);
-	pthread_mutex_lock(&ph->data->mtx_data_access);
 	ph->data->n_eating--;
 	pthread_mutex_unlock(&ph->data->mtx_data_access);
 	return (SUCCESS);

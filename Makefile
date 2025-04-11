@@ -1,6 +1,6 @@
 NAME	:= philo
 
-CC	:= gcc
+CC	:= cc
 CFLAGS	:= -g #-fsanitize=thread #-Wextra -Wall -Werror
 
 HEADERS	:= -I. 
@@ -14,7 +14,6 @@ all:  $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(HEADERS) -o $(NAME)
-
 
 clean:
 	@rm -rf $(OBJS)

@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:36:20 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/11 15:37:01 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/11 21:58:11 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -54,6 +54,7 @@ int checker(t_data *data)
 {
 
     int all_started;
+    int i;
     all_started=0;
 	
     while (all_started == 0) {
@@ -64,27 +65,29 @@ int checker(t_data *data)
 
     sync_printf(data, "hello from checker\n");
 
-	/* int elapsed; */
-	/* while (!ph->data->end) */
-	/* { */
-	/*     /\* printf("running checker\n"); *\/ */
-	/*     pthread_mutex_lock(&ph->eating_or_check); */
-	/*     elapsed = time_elapsed_since(ph->lastmeal); */
-	/*     /\* printf("elapsed %d\n", elapsed); *\/ */
-	/*     /\* printf("end %d\n", ph->data->end); *\/ */
-	/*     if (elapsed > ph->data->tt_die) */
-	/*     { */
-	/* 	write_message(ph, DIED); */
-	/* 	ph->data->end = 1; */
-	/* 	queue_iter(ph->data->eat_queue, unlock_philos); */
-	/* 	pthread_mutex_unlock(&ph->eating_or_check); */
-	/* 	return ((void *)SUCCESS); */
-	/*     } */
-	/*     /\* printf("after elapsed %d\n", elapsed); *\/ */
-	/*     pthread_mutex_unlock(&ph->eating_or_check); */
-	/*     usleep(42); */
-	/*     /\* printf("end2 %d\n", ph->data->end); *\/ */
-	/* } */
+	int elapsed;
+	while (!data->end)
+	{
+	    i=-1;
+	    while(++i<data->n_philo) {
+		
+	    /* printf("running checker\n"); */
+	    pthread_mutex_lock(&data->philos[i].mtx_eating_or_check);
+	    elapsed = time_elapsed_since(data->philos[i].lastmeal);
+	    /* printf("elapsed %d\n", elapsed); */
+	    /* printf("end %d\n", ph->data->end); */
+	    if (elapsed > data->tt_die)
+	    {
+		write_message(&data->philos[i], DIED);
+		data->end = 1;
+		return (SUCCESS);
+	    }
+	    /* printf("after elapsed %d\n", elapsed); */
+	    pthread_mutex_unlock(&data->philos[i].mtx_eating_or_check);
+	    }
+	    usleep(42);
+	    /* printf("end2 %d\n", ph->data->end); */
+	}
 	return (SUCCESS);
 }
 

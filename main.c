@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 17:51:37 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/11 13:29:48 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/11 21:28:26 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -25,8 +25,14 @@ int	create_philos(t_data *data, t_philo **philos)
 		(*philos)[i].allow_eating = 0;
 		(*philos)[i].meals_counter = 0;
 		(*philos)[i].data = data;
-		(*philos)[i].left_fork = &data->forks[i];
-		(*philos)[i].right_fork = &data->forks[(i + 1) % data->n_philo];
+		if (i % 2 == 0) {
+		    (*philos)[i].left_fork = &data->forks[i];
+		    (*philos)[i].right_fork = &data->forks[(i + 1) % data->n_philo];
+		}
+		else {
+		    (*philos)[i].left_fork = &data->forks[(i + 1) % data->n_philo];
+		    (*philos)[i].right_fork = &data->forks[i];
+		}
 		if (pthread_mutex_init(&(*philos)[i].mtx_allow_eating, NULL) ||
 		    pthread_mutex_init(&(*philos)[i].mtx_eating_or_check, NULL) )
 			return (MUTEX_ERROR);

@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 22:06:21 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/10 23:11:17 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/11 14:29:08 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -64,3 +64,14 @@ int sync_printf(t_data *data, const char *format, ...)
     return 0;
 }
 
+int get_data(t_data *data, enum e_variable var)
+{
+    int value;
+    pthread_mutex_lock(&data->mtx_data_access);
+    if (var == N_EATING)
+	value = data->n_eating;
+    else
+	value = -1;
+    pthread_mutex_unlock(&data->mtx_data_access);
+    return (value);
+}

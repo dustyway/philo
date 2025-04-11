@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:33:52 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/10 23:23:45 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/11 14:30:45 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef PHILO_H
@@ -44,12 +44,24 @@ enum					e_actions
 	SATISFIED
 };
 
+enum					e_fork_status
+{
+	NONACTIVE = 0,
+	ACTIVE,
+	RESERVED,
+};
+
+enum    e_variable
+{
+    N_EATING,
+};
+
 typedef struct s_data	t_data;
 
 typedef struct s_fork
 {
 	pthread_mutex_t		mtx;
-	int					active;
+	int					is_active;
 	void				*resource;
 }						t_fork;
 
@@ -100,4 +112,5 @@ void					cleanup_simulation(t_data *data);
 void					check_size(t_queue *queue);
 void unlock_philos(void *ph);
 int sync_printf(t_data *data, const char *format, ...);
+int get_data(t_data *data, enum e_variable var);
 #endif

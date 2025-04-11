@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:36:20 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/10 23:10:41 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/11 15:37:01 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -127,28 +127,29 @@ void	*waiter_thread(void *data)
 
 	sync_printf(data, "hello from waiter\n");
 	d = (t_data *)data;
-	/* while (!d->end) */
-	/* { */
-	/*     sync_printf(data, "running waiter\n"); */
-	/* 	while (!d->end && (d->n_eating != 0 || (int) d->eat_queue->size < d->n_philo / 2)) */
-	/* 		usleep(42); */
-	/* 	usleep(42); */
-	/* 	while (!d->end && d->n_eating != d->n_philo / 2) */
-	/* 	{ */
-	/* 		i = -1; */
-	/* 		while (++i < (int) queue_size(d->eat_queue)) */
-	/* 		{ */
-	/* 		    /\* sync_printf(data, "try eating\n"); *\/ */
-	/* 			if (try_eating(queue_peek_n(d->eat_queue, i)) == SUCCESS) */
-	/* 			{ */
-	/* 				dequeue_nth(d->eat_queue, i); */
-	/* 				break ; */
-	/* 			} */
-	/* 		} */
-	/* 		/\* printf("number eating: %d/%d\n", d->n_eating, d->n_philo); *\/ */
-	/* 	} */
-	/* 	sync_printf(data, "served philos\n"); */
-	/* } */
+	while (!d->end)
+	{
+	    sync_printf(data, "running waiter\n");
+	    /* wait until nobody is eating and half the philosophers are ready to be served */
+	    while (!d->end && (get_data(d, N_EATING) != 0 || (int) queue_size(d->eat_queue) < d->n_philo / 2))
+			usleep(100);
+		usleep(100);
+		while (!d->end && get_data(d, N_EATING) != d->n_philo / 2)
+		{
+			i = -1;
+			while (++i < (int) queue_size(d->eat_queue))
+			{
+			    /* sync_printf(data, "try eating\n"); */
+				if (try_eating(queue_peek_n(d->eat_queue, i)) == SUCCESS)
+				{
+					dequeue_nth(d->eat_queue, i);
+					break ;
+				}
+			}
+			/* sync_printf(data, "number eating: %d/%d\n", d->n_eating, d->n_philo); */
+		}
+		sync_printf(data, "served philos\n");
+	}
 	return (NULL);
 }
 
@@ -167,7 +168,10 @@ int	start_simulation(t_data *data)
 			return (THREAD_ERROR);
 		i+=2;
 	}
-	usleep(42);
+
+	if (pthread_create(&data->waiter_id, NULL, waiter_thread, data))
+		return (THREAD_ERROR);
+	usleep(20);
 	i = 1;
 	while (i < data->n_philo)
 	{

@@ -1,7 +1,7 @@
 NAME	:= philo
 
 CC	:= cc
-CFLAGS	:= -g #-fsanitize=thread #-Wextra -Wall -Werror
+CFLAGS	:= -g -fsanitize=thread #-Wextra -Wall -Werror
 
 HEADERS	:= -I. 
 SRCS	:= actions.c ft_list.c main.c parsing.c queue.c simulation.c utils.c

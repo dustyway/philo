@@ -6,7 +6,7 @@
 /*   By: pschneid <pschneid@student.42berl...>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 21:36:20 by pschneid          #+#    #+#             */
-/*   Updated: 2025/04/11 21:58:11 by pschneid         ###   ########.fr       */
+/*   Updated: 2025/04/12 19:42:56 by pschneid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "philo.h"
@@ -127,16 +127,28 @@ void	*waiter_thread(void *data)
 {
 	t_data	*d;
 	int		i;
+	int nr_eat, qs;
 
 	sync_printf(data, "hello from waiter\n");
 	d = (t_data *)data;
-	while (!d->end)
+	while (1)
 	{
-	    sync_printf(data, "running waiter\n");
+	    if(d->end)
+		return (NULL);
 	    /* wait until nobody is eating and half the philosophers are ready to be served */
-	    while (!d->end && (get_data(d, N_EATING) != 0 || (int) queue_size(d->eat_queue) < d->n_philo / 2))
-			usleep(100);
-		usleep(100);
+	    while (1) {
+		nr_eat = get_data(d, N_EATING);
+		qs = (int) queue_size(d->eat_queue);
+		if (nr_eat==0 && qs >= d->n_philo/2) {
+		    sync_printf(data, "Nobody is eating and %d philos are ready to be served\n", qs);
+		    break;
+		}
+		usleep(20);
+	    }
+	    sync_printf(data, "End first loop\n", qs);
+		/* !d->end && (get_data(d, N_EATING) != 0 || (int) queue_size(d->eat_queue) < d->n_philo / 2)) */
+		/* 	usleep(20); */
+
 		while (!d->end && get_data(d, N_EATING) != d->n_philo / 2)
 		{
 			i = -1;
@@ -187,7 +199,7 @@ int	start_simulation(t_data *data)
 	/* printf("starting waiter\n"); */
 	if (pthread_create(&data->waiter_id, NULL, waiter_thread, data))
 		return (THREAD_ERROR);
-	return (checker(data));
+	return (0);//(checker(data));
 }
 
 void	cleanup_simulation(t_data *data)
